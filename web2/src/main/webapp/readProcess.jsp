@@ -6,7 +6,7 @@
     pageEncoding="UTF-8"%>
 <%-- 모든 JSP는 각각의 request와 response를 가지고 있다 --%>
 <%
-	// list.jsp에서 넘긴 값 가져오기
+	// list.jsp에서 넘긴 id 값 가져오기
 	int id = Integer.parseInt(request.getParameter("id"));
 	
 	// DB 작업

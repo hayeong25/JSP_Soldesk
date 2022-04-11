@@ -15,23 +15,22 @@
 	String email = request.getParameter("email");
 	int age = Integer.parseInt(request.getParameter("age"));
 	
+	// DTO 객체 생성해 가져온 값 담기
 	MemberDTO insertDTO = new MemberDTO(name, addr, email, age);
 	
 	// DB 작업
 	Connection con = JdbcUtil.getConnection();
 	MemberDAO dao = new MemberDAO(con);
 	
-	String path = "";
 	if(dao.insert(insertDTO)) {
 		// 페이지 이동 => 전체 리스트 보여주기
-		path = "list.jsp";
+		response.sendRedirect("list.jsp");
 		// commit
 		JdbcUtil.commit(con);
 	}else {
 		// 페이지 이동 => 실패가 발생한 페이지 보여주기
-		path = "insert.jsp";
+		response.sendRedirect("insert.jsp");
 		// rollback
 		JdbcUtil.rollback(con);
 	}
-	response.sendRedirect(path);
 %>
