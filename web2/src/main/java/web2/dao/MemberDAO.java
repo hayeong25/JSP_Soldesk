@@ -111,4 +111,57 @@ public class MemberDAO {
 		
 		return flag;
 	}
+	
+	/* ---------------- member 수정 (UPDATE member SET addr = ? WHERE id = ?);  ---------------- */
+	public boolean update(int id, String addr) {
+		boolean flag = false;
+		
+		PreparedStatement pstmt = null;
+		
+		String SQL = "UPDATE member SET addr = ? WHERE id = ?";
+		
+		try {
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setString(1, addr);
+			pstmt.setInt(2, id);
+			
+			int result = pstmt.executeUpdate();
+			
+			if(result > 0) {
+				flag = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return flag;
+	}
+	
+	/* ---------------- member 삭제 (DELETE FROM member WHERE id = ?);  ---------------- */
+	public boolean delete(int id) {
+		boolean flag = false;
+		
+		PreparedStatement pstmt = null;
+		
+		String SQL = "DELETE FROM member WHERE id = ?";
+		
+		try {
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setInt(1, id);
+			
+			int result = pstmt.executeUpdate();
+			
+			if(result > 0) {
+				flag = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return flag;
+	}
 }

@@ -6,8 +6,8 @@
 	// request 영역에서 값 가져오기
 	MemberDTO dto = (MemberDTO)request.getAttribute("dto");
 %>
-	<h1>Read</h1>
-	<form action="" method="post">
+	<h1>이메일 수정</h1>
+	<form action="updateProcess.jsp" method="post">
 		<div class="form-group row">
 			<label for="id" class="col-sm-2 col-form-label">ID</label>
 			<div class="col-sm-8">
@@ -23,7 +23,7 @@
 		<div class="form-group row">
 			<label for="addr" class="col-sm-2 col-form-label">Address</label>
 			<div class="col-sm-8">
-				<input type="text" name="addr" id="addr" class="form-control" value="<%=dto.getAddr()%>" readonly/>
+				<input type="text" name="addr" id="addr" class="form-control" value="<%=dto.getAddr()%>"/>
 			</div>
 		</div>
 		<div class="form-group row">
@@ -41,29 +41,17 @@
 		<div class="form-group row">
 			<div class="col-sm-10">
 				<button type="submit" class="btn btn-primary">수정</button>
-				<button type="submit" class="btn btn-danger">삭제</button>
+				<button type="button" class="btn btn-danger">취소</button>
 			</div>
 		</div>
 	</form>
-<%-- 수정 / 삭제 버튼 jQuery로 처리 --%>
+<%-- 취소 버튼 jQuery로 처리 --%>
 <script src="/jQuery/jquery-3.6.0.min.js"></script>
 <script>
-	<%-- 전송할 form 가져오기 --%>
-	let form = $("form");
-
-	<%-- 삭제 클릭 시 removeProcess로 form 전송 --%>
-	<%-- type="submit"인 경우 function(e) --%>
-	$(".btn-danger").click(function(e) {
-		e.preventDefault();
-		$(form).attr("action", "removeProcess.jsp");
-		$(form).submit();
-	})
-	
-	<%-- 수정 클릭 시 modifyProcess로 form 전송 --%>
-	$(".btn-primary").click(function(e) {
-		e.preventDefault();
-		$(form).attr("action", "modifyProcess.jsp");
-		$(form).submit();
+	<%-- 취소 클릭 시 list.jsp로 이동 --%>
+	$(".btn-danger").click(function() {
+		location.href = "/list.jsp";
+		
 	})
 </script>
 <%@ include file="./layout/footer.jsp" %>
