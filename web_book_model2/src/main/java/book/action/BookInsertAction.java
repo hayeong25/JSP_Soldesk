@@ -25,11 +25,10 @@ public class BookInsertAction implements Action {
 		// Service 호출
 		BookInsertService service = new BookInsertService();
 		if(!service.insertBook(dto)) {
-			path = "/insert.jsp";
+			path = "/insert.jsp"; // 입력 실패 시 경로
 		}
 		
 		// ActionForward 객체 생성 후 return
-		
 		return new ActionForward(path, true);
 	}
 }

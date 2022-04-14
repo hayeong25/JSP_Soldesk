@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 public class ActionForward {
 	private String path;
-	private boolean redirect;
+	private boolean redirect; //true(sendRedirect), false(forward)
 	
 	
 }
