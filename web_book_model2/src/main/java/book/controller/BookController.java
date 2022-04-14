@@ -16,6 +16,7 @@ public class BookController extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		
 		// requestURI 확인 및 추출
+		// URI : 통합 자원 식별자(Uniform Resource Identifier)
 		String command = request.getRequestURI();
 		
 		// BookActionFactory를 이용해 Action 생성
@@ -31,9 +32,9 @@ public class BookController extends HttpServlet {
 		}
 		
 		// af에는 path와 이동방식이 들어 있음
-		if(af.isRedirect()) {
+		if(af.isRedirect()) { // Action에서 ActionForward(path, true)로 넘긴 경우
 			response.sendRedirect(af.getPath());
-		}else {
+		}else { // Action에서 ActionForward(path, false)로 넘겨 forward로 처리해야 하는 경우
 			RequestDispatcher rd = request.getRequestDispatcher(af.getPath());
 			rd.forward(request, response);
 		}

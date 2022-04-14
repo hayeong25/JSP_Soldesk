@@ -12,6 +12,4 @@ import lombok.*;
 public class ActionForward {
 	private String path;
 	private boolean redirect; //true(sendRedirect), false(forward)
-	
-	
 }
