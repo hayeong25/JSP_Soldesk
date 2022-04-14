@@ -47,6 +47,49 @@ public class BookDAO {
 		return list;
 	}
 	
+	/* ---------------- 도서 검색 (SELECT * FROM bookTBL WHERE ? = ?) ---------------- */
+	public List<BookDTO> searchList(String criteria, String keyword) {
+		List<BookDTO> list = new ArrayList<BookDTO>();
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String SQL = "";
+		
+		try {
+			if(criteria.equals("code")) {
+				SQL = "SELECT * FROM bookTBL WHERE code = ?";
+				pstmt = con.prepareStatement(SQL);
+				pstmt.setInt(1, Integer.parseInt(keyword));
+			}else {
+				SQL = "SELECT * FROM bookTBL WHERE writer LIKE ?";
+				pstmt = con.prepareStatement(SQL);
+				pstmt.setString(1, "%" + keyword + "%");
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				BookDTO dto = new BookDTO();
+				dto.setCode(rs.getInt("code"));
+				dto.setTitle(rs.getString("title"));
+				dto.setWriter(rs.getString("writer"));
+				dto.setPrice(rs.getInt("price"));
+				
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return list;
+	}
+	
+	
 	/* ---------------- 도서 입력 (INSERT INTO bookTBL VALUES(?, ?, ?, ?) ---------------- */
 	public boolean insert(BookDTO dto) {
 		boolean flag = false;

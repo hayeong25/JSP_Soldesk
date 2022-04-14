@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ include file="/layout/header.jsp"%>
 	<h1>도서 정보 검색</h1>
-	<form action="" method="post">
+	<form action="searchPro.jsp" method="post">
 		<div class="form-row">
 			<div class="form-group col-md-6">
 				<select name="criteria" id="criteria" class="form-control">
@@ -11,7 +11,7 @@
 				</select>
 			</div>
 			<div class="form-group col-md-6">
-				<input type="text" name="keywowrd" id="keyword" class="form-control"/>
+				<input type="text" name="keyword" id="keyword" class="form-control"/>
 			</div>
 		</div>
 		<div class="form-group row">
