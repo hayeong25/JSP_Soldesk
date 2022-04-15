@@ -3,7 +3,7 @@
 <%@ include file="/layout/header.jsp"%>
 	<h1>도서 정보 삭제</h1>
 	<p>삭제할 도서의 코드 번호를 입력하세요</p>
-	<form action="deletePro.jsp" method="post">
+	<form action="/delete.do" method="post">
 		<div class="form-group row">
 			<label for="code" class="col-sm-2 col-form-label">Code</label>
 			<div class="col-sm-8">

@@ -35,6 +35,7 @@ public class BookController extends HttpServlet {
 		if(af.isRedirect()) { // Action에서 ActionForward(path, true)로 넘긴 경우
 			response.sendRedirect(af.getPath());
 		}else { // Action에서 ActionForward(path, false)로 넘겨 forward로 처리해야 하는 경우
+			// RequestDispatcher : 클라이언트로부터 요청 받은 정보를 서버의 다른 자원(HTML, JSP, Servlet 등)에 보내는 역할을 하는 인터페이스
 			RequestDispatcher rd = request.getRequestDispatcher(af.getPath());
 			rd.forward(request, response);
 		}

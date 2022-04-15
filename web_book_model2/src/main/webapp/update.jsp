@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ include file="/layout/header.jsp"%>
 	<h1>도서 정보 수정</h1>
-	<form action="updatePro.jsp" method="post">
+	<form action="/update.do" method="post">
 		<div class="form-group row">
 			<label for="code" class="col-sm-2 col-form-label">Code</label>
 			<div class="col-sm-8">

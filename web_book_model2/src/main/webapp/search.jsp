@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ include file="/layout/header.jsp"%>
 	<h1>도서 정보 검색</h1>
-	<form action="searchPro.jsp" method="post">
+	<form action="/search.do" method="post">
 		<div class="form-row">
 			<div class="form-group col-md-6">
 				<select name="criteria" id="criteria" class="form-control">

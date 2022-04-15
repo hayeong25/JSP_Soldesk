@@ -26,7 +26,7 @@ public class BookSearchAction implements Action {
 		request.setAttribute("list", list);
 		
 		// ActionForward
-		return new ActionForward(path, true);
+		return new ActionForward(path, false);
 	}
 
 }

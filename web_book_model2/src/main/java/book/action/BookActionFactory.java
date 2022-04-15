@@ -25,10 +25,10 @@ public class BookActionFactory {
 			action = new BookInsertAction("/list.do"); // list.jsp는 getAttribute부터 시작하기 때문에 setAttribute가 있는 list.do로 가야 함
 		}else if(command.equals("/update.do")) {
 			action = new BookUpdateAction("/list.do");
-		}else if(command.equals("/serach.do")) {
-			action = new BookSearchAction("/list.do");
+		}else if(command.equals("/search.do")) {
+			action = new BookSearchAction("/list.jsp"); // list.do로 가게 되면 Controller로 가서 BookListAction으로 가 전체 목록 보여주기가 실행되므로 list.jsp로 가야 함
 		}else if(command.equals("/delete.do")) {
-			action = new BookDeleteAction("/index.jsp");
+			action = new BookDeleteAction("/list.do");
 		}
 		
 		return action;
