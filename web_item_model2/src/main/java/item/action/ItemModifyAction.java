@@ -13,18 +13,19 @@ public class ItemModifyAction implements Action {
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// request.getParameter
-		String name = request.getParameter("name");
+		int num = Integer.parseInt(request.getParameter("num"));
+		String size = request.getParameter("psize");
 		int price = Integer.parseInt(request.getParameter("price"));
 		
 		// DB 작업 >> Service 호출
 		ItemModifyService service = new ItemModifyService();
-		boolean result = service.modifyItem(name, price);
+		boolean result = service.modifyItem(num, size, price);
 		
 		if(!result) {
 			path = "/update.jsp";
 		}
 		
-		return new ActionForward(name, result);
+		return new ActionForward(path, true);
 	}
 
 }

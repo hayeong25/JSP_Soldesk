@@ -51,21 +51,33 @@ public class ItemDAO {
 		return list;
 	}
 	
-	/* ------------------- 상품 검색 (SELECT * FROM item WHERE name LIKE %?%)  ------------------- */
-	public List<ItemDTO> search(String criteria, String keyword) {
+	/* ------------------- 상품 검색 (SELECT * FROM item WHERE category = ? AND name LIKE %?%)  ------------------- */
+	public List<ItemDTO> search(String category, String name) {
 		List<ItemDTO> list = new ArrayList<ItemDTO>();
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		String SQL = "SELECT * FROM item WHERE name LIKE %?%";
+		String SQL = "SELECT * FROM item WHERE category = ? AND name LIKE ?";
 		
 		try {
 			pstmt = con.prepareStatement(SQL);
+			pstmt.setString(1, category);
+			pstmt.setString(2, "%" + name + "%");
+			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
+				ItemDTO dto = new ItemDTO();
+				dto.setNum(rs.getInt("num"));
+				dto.setCategory(rs.getString("category"));
+				dto.setName(rs.getString("name"));
+				dto.setContent(rs.getString("content"));
+				dto.setPsize(rs.getString("psize"));
+				dto.setPrice(rs.getInt("price"));
+				dto.setRegisterAt(rs.getDate("register_at"));
 				
+				list.add(dto);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,18 +119,19 @@ public class ItemDAO {
 		return flag;
 	}
 	
-	/* ------------------- 상품 수정 (UPDATE item SET price = ? WHERE name = ?)  ------------------- */
-	public boolean modify(String name, int price) {
+	/* ------------------- 상품 수정 (UPDATE item SET psize = ?, price = ? WHERE num = ?)  ------------------- */
+	public boolean modify(int num, String size, int price) {
 		boolean flag = false;
 		
 		PreparedStatement pstmt = null;
 		
-		String SQL = "UPDATE item SET price = ? WHERE name = ?";
+		String SQL = "UPDATE item SET psize = ?, price = ? WHERE num = ?";
 		
 		try {
 			pstmt = con.prepareStatement(SQL);
-			pstmt.setInt(1, price);
-			pstmt.setString(2, name);
+			pstmt.setString(1, size);
+			pstmt.setInt(2, price);
+			pstmt.setInt(3, num);
 			
 			int result = pstmt.executeUpdate();
 			
@@ -132,17 +145,17 @@ public class ItemDAO {
 		return flag;
 	}
 	
-	/* ------------------- 상품 삭제 (DELETE FROM item WHERE name = ?)  ------------------- */
-	public boolean remove(String name) {
+	/* ------------------- 상품 삭제 (DELETE FROM item WHERE num = ?)  ------------------- */
+	public boolean remove(int num) {
 		boolean flag = false;
 		
 		PreparedStatement pstmt = null;
 		
-		String SQL = "DELETE FROM item WHERE name = ?";
+		String SQL = "DELETE FROM item WHERE num = ?";
 		
 		try {
 			pstmt = con.prepareStatement(SQL);
-			pstmt.setString(1, name);
+			pstmt.setInt(1, num);
 			
 			int result = pstmt.executeUpdate();
 			

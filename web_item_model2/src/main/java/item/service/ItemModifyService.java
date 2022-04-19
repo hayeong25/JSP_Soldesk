@@ -6,11 +6,11 @@ import java.sql.Connection;
 import item.dao.ItemDAO;
 
 public class ItemModifyService {
-	public boolean modifyItem(String name, int price) {
+	public boolean modifyItem(int num, String size, int price) {
 		Connection con = getConnection();
 		ItemDAO dao = new ItemDAO(con);
 		
-		boolean result = dao.modify(name, price);
+		boolean result = dao.modify(num, size, price);
 		
 		if(result) {
 			commit(con);

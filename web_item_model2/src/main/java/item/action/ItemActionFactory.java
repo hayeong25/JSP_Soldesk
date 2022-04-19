@@ -19,6 +19,7 @@ public class ItemActionFactory {
 	Action action = null;
 	public Action action(String command) {
 		// Action 생성 시 작업 성공 후 이동할 path 지정
+		// SELECT는 .jsp로
 		if(command.equals("/list.do")) {
 			action = new ItemListAction("/list.jsp");
 		}else if(command.equals("/insert.do")) {

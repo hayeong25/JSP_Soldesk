@@ -7,11 +7,11 @@ import item.dao.ItemDAO;
 import item.dto.ItemDTO;
 
 public class ItemSearchService {
-	public List<ItemDTO> searchItem(String criteria, String keyword) {
+	public List<ItemDTO> searchItem(String category, String name) {
 		Connection con = getConnection();
 		ItemDAO dao = new ItemDAO(con);
 		
-		List<ItemDTO> list = dao.search(criteria, keyword);
+		List<ItemDTO> list = dao.search(category, name);
 		
 		close(con);
 		

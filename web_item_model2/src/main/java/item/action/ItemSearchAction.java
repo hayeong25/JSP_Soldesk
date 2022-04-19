@@ -16,12 +16,12 @@ public class ItemSearchAction implements Action {
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// request.getParameter
-		String criteria = request.getParameter("criteria");
-		String keyword = request.getParameter("keyword");
+		String category = request.getParameter("category");
+		String name = request.getParameter("name");
 		
 		// DB 작업 >> Service 호출
 		ItemSearchService service = new ItemSearchService();
-		List<ItemDTO> list = service.searchItem(criteria, keyword);
+		List<ItemDTO> list = service.searchItem(category, name);
 		
 		if(list == null) {
 			path = "/search.jsp";

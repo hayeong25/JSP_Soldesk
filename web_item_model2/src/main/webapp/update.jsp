@@ -4,15 +4,21 @@
 	<h1>상품 수정</h1>
 	<form action="/update.do" method="post">
 		<div class="form-group row">
-			<label for="name" class="col-sm-2 col-form-label">상품명</label>
+			<label for="num" class="col-sm-2 col-form-label">상품번호</label>
 			<div class="col-sm-8">
-				<input type="text" name="name" id="name" class="form-control"/>
+				<input type="text" name="num" id="num" class="form-control"/>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label for="price" class="col-sm-2 col-form-label">가격</label>
 			<div class="col-sm-8">
 				<input type="text" name="price" id="price" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="psize" class="col-sm-2 col-form-label">사이즈</label>
+			<div class="col-sm-8">
+				<input type="text" name="psize" id="psize" class="form-control"/>
 			</div>
 		</div>
 		<div class="form-group row">

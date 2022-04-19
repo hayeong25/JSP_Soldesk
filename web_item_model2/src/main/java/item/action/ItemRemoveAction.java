@@ -13,11 +13,11 @@ public class ItemRemoveAction implements Action {
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// request.getParameter (없으면 skip)
-		String name = request.getParameter("name");
+		int num = Integer.parseInt(request.getParameter("num"));
 		
 		// DB 작업 >> Service 호출
 		ItemRemoveService service = new ItemRemoveService();
-		boolean result = service.removeItem(name);
+		boolean result = service.removeItem(num);
 		
 		if(!result) {
 			path = "/delete.jsp";

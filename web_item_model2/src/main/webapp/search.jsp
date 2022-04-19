@@ -5,13 +5,17 @@
 	<form action="/search.do" method="post">
 		<div class="form-row">
 			<div class="form-group col-md-6">
-				<select name="criteria" id="criteria" class="form-control">
-					<option value="name">상품명</option>
-					<option value="content">상품정보</option>
+				<select name="category" id="category" class="form-control">
+					<option value="outwear">아웃웨어</option>
+					<option value="fulldress">정장/신사복</option>
+					<option value="tshirts">티셔츠</option>
+					<option value="yshirts">와이셔츠</option>
+					<option value="pants">바지</option>
+					<option value="shoes">슈즈</option>
 				</select>
 			</div>
 			<div class="form-group col-md-6">
-				<input type="text" name="keyword" id="keyword" class="form-control"/>
+				<input type="text" name="name" id="name" class="form-control"/>
 			</div>
 		</div>
 		<div class="form-group row">
