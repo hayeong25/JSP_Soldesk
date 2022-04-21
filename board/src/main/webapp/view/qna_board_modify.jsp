@@ -48,11 +48,16 @@
 				<div style="height:20px"></div>
 				<div class="box-footer text-center">
 					<button type="submit" class="btn btn-primary">수정</button>
-					<button type="reset" class="btn btn-danger">취소</button>
+					<button type="reset" class="btn btn-danger" onclick="history.back()">취소</button>
 				</div>
 				<div style="height:20px"></div>
 			</div>
 			<input type="hidden" name="bno" value="${dto.bno}"/>
+			<%-- 페이지 나누기 후 추가 --%>
+			<input type="hidden" name="page" value="${searchDTO.page }" />
+			<input type="hidden" name="amount" value="${searchDTO.amount }" />
+			<input type="hidden" name="criteria" value="${searchDTO.criteria }" />
+			<input type="hidden" name="keyword" value="${searchDTO.keyword }" />
 		</form>
 	</div>
 </section>

@@ -31,6 +31,12 @@ public class BoardActionFactory {
 			action = new BoardViewAction("/view/qna_board_modify.jsp"); // view와 하는 작업이 동일하기 때문에 Action이 같음
 		}else if(command.equals("/qUpdate.do")) {
 			action = new BoardModifyAction("/qView.do");
+		}else if(command.equals("/qReplyView.do")) {
+			action = new BoardViewAction("/view/qna_board_reply.jsp");
+		}else if(command.equals("/qReply.do")) {
+			action = new BoardReplyAction("/qList.do");
+		}else if(command.equals("/qSearch.do")) {
+			action = new BoardSearchAction("/view/qna_board_list.jsp");
 		}
 		
 		return action;

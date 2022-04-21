@@ -8,6 +8,7 @@ import java.util.List;
 
 import static board.dao.JdbcUtil.*;
 import board.dto.BoardDTO;
+import board.dto.SearchDTO;
 
 public class BoardDAO {
 	private Connection con;
@@ -18,17 +19,42 @@ public class BoardDAO {
 	}
 	
 	/* ----------------------- 게시글 목록 ----------------------- */
-	public List<BoardDTO> getList() {
+	public List<BoardDTO> getList(SearchDTO searchDTO) {
 		List<BoardDTO> list = new ArrayList<BoardDTO>();
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		String SQL = "SELECT bno, title, name, regdate, readcount FROM board ORDER BY bno DESC";
+		String SQL = "";
 		
 		try {
-			pstmt = con.prepareStatement(SQL);
+			int start = searchDTO.getPage() * searchDTO.getAmount();
+			int end = (searchDTO.getPage() - 1) * searchDTO.getAmount();
 			
+			if(searchDTO.getCriteria().isEmpty()) { // 단순 리스트 요청 시
+				SQL = "SELECT * FROM (SELECT rownum as rnum, A.* "
+						+ "FROM (SELECT bno, title, name, regdate, readcount, re_ref, re_lev, re_seq "
+						+ "FROM board "
+						+ "WHERE bno > 0 ORDER BY re_ref DESC, re_seq ASC) A "
+						+ "WHERE rownum <= ?) "
+						+ "WHERE rnum > ?";
+				
+				pstmt = con.prepareStatement(SQL);
+				pstmt.setInt(1, start);
+				pstmt.setInt(2, end);
+			}else { // 검색 요청 시
+				SQL = "SELECT * FROM (SELECT rownum as rnum, A.* "
+						+ "FROM (SELECT bno, title, name, regdate, readcount, re_ref, re_lev, re_seq "
+						+ "FROM board "
+						+ "WHERE bno > 0 AND " + searchDTO.getCriteria() + " LIKE ? ORDER BY re_ref DESC, re_seq ASC) A "
+						+ "WHERE rownum <= ?) "
+						+ "WHERE rnum > ?";
+				
+				pstmt = con.prepareStatement(SQL);
+				pstmt.setString(1, "%" + searchDTO.getKeyword() + "%");
+				pstmt.setInt(2, start);
+				pstmt.setInt(3, end);
+			}
+		
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -38,6 +64,9 @@ public class BoardDAO {
 				dto.setTitle(rs.getString("title"));
 				dto.setReadCount(rs.getInt("readcount"));
 				dto.setRegDate(rs.getDate("regdate"));
+				dto.setReRef(rs.getInt("re_ref"));
+				dto.setReSeq(rs.getInt("re_seq"));
+				dto.setReLev(rs.getInt("re_lev"));
 				
 				list.add(dto);
 			}
@@ -50,6 +79,40 @@ public class BoardDAO {
 		}
 		
 		return list;
+	}
+	
+	/* ----------------------- 전체 게시글 개수 ----------------------- */
+	public int totalRows(String criteria, String keyword) {
+		int total = 0;
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String SQL = "";
+		
+		try {
+			if(criteria.isEmpty()) {
+				SQL = "SELECT count(*) FROM board";
+				pstmt = con.prepareStatement(SQL);
+			}else {
+				SQL = "SELECT count(*) FROM board WHERE " + criteria + " LIKE ?";
+				pstmt = con.prepareStatement(SQL);
+				pstmt.setString(1, "%" + keyword + "%");
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				total = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return total;
 	}
 	
 	/* ----------------------- 게시글 작성 ----------------------- */
@@ -85,6 +148,62 @@ public class BoardDAO {
 		return flag;
 	}
 	
+	/* ----------------------- 답변글 작성 ----------------------- */
+	public boolean replyArticle(BoardDTO dto) {
+		boolean flag = false;
+		
+		PreparedStatement pstmt = null;
+		
+		String SQL = "";
+		
+		try {
+			int re_ref = dto.getReRef();
+			int re_lev = dto.getReLev();
+			int re_seq = dto.getReSeq();
+			
+			// 댓글 삽입 전 업데이트
+			SQL = "UPDATE board SET re_seq = re_seq + 1 WHERE re_ref = ? AND re_seq > ?";
+			
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setInt(1, re_ref);
+			pstmt.setInt(2, re_seq);
+			
+			int updateResult = pstmt.executeUpdate();
+			
+			// PreparedStatement 닫고 다시 작업
+			close(pstmt);
+			
+			// re_lev, re_seq 값 증가
+			re_lev = re_lev + 1;
+			re_seq = re_seq + 1;
+			
+			// 댓글 삽입
+			SQL = "INSERT INTO board(bno, name, password, title, content, attach, re_ref, re_lev, re_seq) VALUES(board_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
+			
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setString(1, dto.getName());
+			pstmt.setString(2, dto.getPassword());
+			pstmt.setString(3, dto.getTitle());
+			pstmt.setString(4, dto.getContent());
+			pstmt.setString(5, dto.getAttach());
+			pstmt.setInt(6, re_ref);
+			pstmt.setInt(7, re_lev);
+			pstmt.setInt(8, re_seq);
+			
+			int insertResult = pstmt.executeUpdate();
+			
+			if(insertResult > 0) {
+				flag = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return flag;
+	}
+	
 	/* ----------------------- 게시글 보기 ----------------------- */
 	public BoardDTO viewArticle(int bno) {
 		BoardDTO dto = new BoardDTO();
@@ -92,7 +211,7 @@ public class BoardDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		String SQL = "SELECT bno, name, title, content, attach FROM board WHERE bno = ?";
+		String SQL = "SELECT bno, name, title, content, attach, re_ref, re_lev, re_seq FROM board WHERE bno = ?";
 		
 		try {
 			pstmt = con.prepareStatement(SQL);
@@ -106,6 +225,10 @@ public class BoardDAO {
 				dto.setTitle(rs.getString("title"));
 				dto.setContent(rs.getString("content"));
 				dto.setAttach(rs.getString("attach"));
+				// 댓글 작업 시 필요한 부분도 가져오기
+				dto.setReRef(rs.getInt("re_ref"));
+				dto.setReSeq(rs.getInt("re_seq"));
+				dto.setReLev(rs.getInt("re_lev"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -143,6 +266,42 @@ public class BoardDAO {
 		return flag;
 	}
 	
+	/* ----------------------- 게시글 검색 ----------------------- */
+	public List<BoardDTO> searchArticle(SearchDTO searchDTO) {
+		List<BoardDTO> list = new ArrayList<BoardDTO>();
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String SQL = "SELECT bno, title, name, regdate, readcount, re_ref, re_seq, re_lev FROM board WHERE " + searchDTO.getCriteria() + " LIKE ? ORDER BY re_ref DESC, re_seq ASC";
+		
+		try {
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setString(1, "%" + searchDTO.getKeyword() + "%");
+			
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				BoardDTO dto = new BoardDTO();
+				dto.setBno(rs.getInt("bno"));
+				dto.setName(rs.getString("name"));
+				dto.setTitle(rs.getString("title"));
+				dto.setReadCount(rs.getInt("readcount"));
+				dto.setRegDate(rs.getDate("regdate"));
+				dto.setReRef(rs.getInt("re_ref"));
+				dto.setReSeq(rs.getInt("re_seq"));
+				dto.setReLev(rs.getInt("re_lev"));
+				
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return list;
+	}
 	
 	/* ----------------------- 게시글 수정 ----------------------- */
 	public boolean modifyArticle(BoardDTO dto) {

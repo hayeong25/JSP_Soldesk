@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%> <%@include file="../include/header.jsp"%>
+<% request.setCharacterEncoding("UTF-8"); %>
 <section class="content">
   <div class="box box-primary">
     <div class="box-header">
@@ -71,16 +72,30 @@ pageEncoding="UTF-8"%> <%@include file="../include/header.jsp"%>
         <div class="form-group text-center">
           <button type="submit" class="btn btn-primary">등록</button>
           <button type="reset" class="btn btn-danger">다시작성</button>
-          <button type="button" class="btn btn-warning" id="list" onclick="location.href='/qList.do'">
+          <button type="button" class="btn btn-warning" id="list">
             목록보기
           </button>
         </div>
         <div style="height:20px"></div>
       </div>
+	<%-- 페이지 나누기 후 추가 --%>
+	<input type="hidden" name="page" value="1" />
+	<input type="hidden" name="amount" value="<%=request.getParameter("amount") %>" />
+	<input type="hidden" name="criteria" value="" />
+	<input type="hidden" name="keyword" value="" />
     </form>
   </div>
 </section>
+
+<form action="/qList.do" id="actionForm">
+	<input type="hidden" name="page" value="<%=request.getParameter("page") %>" />
+	<input type="hidden" name="amount" value="<%=request.getParameter("amount") %>" />
+	<input type="hidden" name="criteria" value="<%=request.getParameter("criteria") %>" />
+	<input type="hidden" name="keyword" value="<%=request.getParameter("keyword") %>" />
+</form>
+
 <script src="/js/write.js"></script>
+
 <%-- write form validate --%>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
